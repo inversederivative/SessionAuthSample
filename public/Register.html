@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+<div class="register-container">
+    <form action="/register" method="post">
+        <label for="fname">First Name:
+            <input type="text" id="fname" name="firstName" placeholder="First Name" required>
+        </label>
+        <label for="lname">Last Name:
+            <input type="text" id="lname" name="lastName" placeholder="Last Name" required>
+        </label>
+        <label for="email">Email Address:
+            <input type="email" id="email" name="email" placeholder="Email Address" required>
+        </label>
+        <label for="username">Username:
+            <input type="text" id="username" name="username" placeholder="Username" required>
+        </label>
+        <label for="password">Password:
+            <input type="password" id="password" name="password" placeholder="Password" required>
+        </label>
+        <label for="repeat-password">Repeat Password:
+            <input type="password" id="repeat-password" name="repeatPassword" placeholder="Repeat Password" required>
+        </label>
+        <label for="country">Country (Optional):
+            <input type="text" id="country" name="country" placeholder="Country">
+        </label>
+        <input type="submit" value="Register">
+    </form>
+    <br />
+    <a href="/Register.html" class="login">Back to Login</a>
+</div>
+</body>
+</html>
