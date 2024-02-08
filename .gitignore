@@ -1,4 +1,8 @@
 .idea/
 config.json
 node_modules/
-
+package-lock.json
+server.crt
+server.key
+config_old.json
+server_old.js
