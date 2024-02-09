@@ -1,3 +1,103 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Register</title>-->
+<!--    <link rel="stylesheet" href="Register.css">-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="register-container">-->
+<!--    <form action="/register" method="post">-->
+<!--        <label for="fname">First Name:-->
+<!--            <input type="text" id="fname" name="firstName" placeholder="First Name" required>-->
+<!--        </label>-->
+<!--        <label for="lname">Last Name:-->
+<!--            <input type="text" id="lname" name="lastName" placeholder="Last Name" required>-->
+<!--        </label>-->
+<!--        <label for="email">Email Address:-->
+<!--            <input type="email" id="email" name="email" placeholder="Email Address" required>-->
+<!--        </label>-->
+<!--        <label for="username">Username:-->
+<!--            <input type="text" id="username" name="username" placeholder="Username" required>-->
+<!--        </label>-->
+<!--        <label for="password">Password:-->
+<!--            <input type="password" id="password" name="password" placeholder="Password" required>-->
+<!--        </label>-->
+<!--        <label for="repeat-password">Repeat Password:-->
+<!--            <input type="password" id="repeat-password" name="repeatPassword" placeholder="Repeat Password" required>-->
+<!--        </label>-->
+<!--        <label for="country">City:-->
+<!--            <input type="text" id="city" name="city" placeholder="City">-->
+<!--        </label>-->
+<!--        <label for="country">Country:-->
+<!--            <input type="text" id="country" name="country" placeholder="Country">-->
+<!--        </label>-->
+<!--        <label for="country">Zip Code:-->
+<!--            <input type="text" id="zipCode" name="zipCode" placeholder="Zip Code">-->
+<!--        </label>-->
+<!--        <input type="submit" value="Register">-->
+<!--    </form>-->
+<!--    <br />-->
+<!--    <a href="/" class="login">Back to Login</a>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Register</title>-->
+<!--    <link rel="stylesheet" href="Register.css">-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="register-container">-->
+<!--    <form action="/register" method="post">-->
+<!--        <div class="name-container">-->
+<!--            <div class="name-input">-->
+<!--                <label for="fname">First Name:</label>-->
+<!--                <input type="text" id="fname" name="firstName" placeholder="First Name" required>-->
+<!--            </div>-->
+<!--            <div class="name-input">-->
+<!--                <label for="lname">Last Name:</label>-->
+<!--                <input type="text" id="lname" name="lastName" placeholder="Last Name" required>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <label for="email">Email Address:-->
+<!--            <input type="email" id="email" name="email" placeholder="Email Address" required>-->
+<!--        </label>-->
+<!--        <label for="username">Username:-->
+<!--            <input type="text" id="username" name="username" placeholder="Username" required>-->
+<!--        </label>-->
+<!--        <label for="password">Password:-->
+<!--            <input type="password" id="password" name="password" placeholder="Password" required>-->
+<!--        </label>-->
+<!--        <label for="repeat-password">Repeat Password:-->
+<!--            <input type="password" id="repeat-password" name="repeatPassword" placeholder="Repeat Password" required>-->
+<!--        </label>-->
+<!--        <div class="location-container">-->
+<!--            <div class="location-input">-->
+<!--                <label for="city">City:</label>-->
+<!--                <input type="text" id="city" name="city" placeholder="City">-->
+<!--            </div>-->
+<!--            <div class="location-input">-->
+<!--                <label for="country">Country:</label>-->
+<!--                <input type="text" id="country" name="country" placeholder="Country">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <label for="zipCode">Zip Code:-->
+<!--            <input type="text" id="zipCode" name="zipCode" placeholder="Zip Code">-->
+<!--        </label>-->
+<!--        <input type="submit" value="Register">-->
+<!--    </form>-->
+<!--    <br />-->
+<!--    <a href="/" class="login">Back to Login</a>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,27 +109,46 @@
 <body>
 <div class="register-container">
     <form action="/register" method="post">
-        <label for="fname">First Name:
-            <input type="text" id="fname" name="firstName" placeholder="First Name" required>
-        </label>
-        <label for="lname">Last Name:
-            <input type="text" id="lname" name="lastName" placeholder="Last Name" required>
-        </label>
-        <label for="email">Email Address:
+        <div class="name-container">
+            <div class="name-input">
+                <label for="fname">First Name:</label>
+                <input type="text" id="fname" name="firstName" placeholder="First Name" required>
+            </div>
+            <div class="name-input">
+                <label for="lname">Last Name:</label>
+                <input type="text" id="lname" name="lastName" placeholder="Last Name" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address:</label>
             <input type="email" id="email" name="email" placeholder="Email Address" required>
-        </label>
-        <label for="username">Username:
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
             <input type="text" id="username" name="username" placeholder="Username" required>
-        </label>
-        <label for="password">Password:
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
             <input type="password" id="password" name="password" placeholder="Password" required>
-        </label>
-        <label for="repeat-password">Repeat Password:
+        </div>
+        <div class="form-group">
+            <label for="repeat-password">Repeat Password:</label>
             <input type="password" id="repeat-password" name="repeatPassword" placeholder="Repeat Password" required>
-        </label>
-        <label for="country">Country (Optional):
-            <input type="text" id="country" name="country" placeholder="Country">
-        </label>
+        </div>
+        <div class="location-container">
+            <div class="location-input">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="City">
+            </div>
+            <div class="location-input">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" placeholder="Country">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="zipCode">Zip Code:</label>
+            <input type="text" id="zipCode" name="zipCode" placeholder="Zip Code">
+        </div>
         <input type="submit" value="Register">
     </form>
     <br />
@@ -37,3 +156,4 @@
 </div>
 </body>
 </html>
+

@@ -8,6 +8,7 @@ const https = require('https');
 const bodyParser = require('body-parser');
 const {join} = require("path");
 const favicon = require('serve-favicon');
+const iso3166 = require('iso-3166-1-alpha-2');
 
 const PORT = process.env.PORT || 3030;
 
@@ -16,6 +17,7 @@ const httpsOptions = {
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.crt')
 }
+
 const app = express();
 const server = https.createServer(httpsOptions, app);
 
@@ -25,7 +27,30 @@ const config = JSON.parse(configData);
 
 // Access MySQLx configuration
 const mysqlxConfig = config.mysqlx;
-const { username, password, host, port, schema, collection } = mysqlxConfig;
+
+// Get Country Code and Fetch Weather Data for /weather
+
+const openWeatherMapAPI_KEY = config.WeatherAPI.API_KEY;
+
+function getCountryCode(countryName) {
+    const countryCode = iso3166.getCode(countryName);
+    return countryCode ? countryCode : null;
+}
+
+async function fetchWeatherData(city, countryCode) {
+    const apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${openWeatherMapAPI_KEY}&units=metric`;
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error('Failed to fetch weather data');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        return null;
+    }
+}
 
 // Extract session secret
 const sessionSecret = config.secret || 'default_session_secret';
@@ -57,6 +82,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.use(express.static('public'));
+
 app.use(session({
     // This is The default one is just called ID, and the reason you want to give it a name is just to make it
     // different, so people don t know right away just from the cookie name you are using this library.
@@ -74,7 +101,7 @@ app.use(session({
 }));
 
 // Setup Favicon
-app.use(favicon(__dirname + '/static/favicon.ico'));
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 /////////////////////////////////////
 ///////         GETS           //////
@@ -84,7 +111,6 @@ app.get('/', (req, res) => {
     if (req.session.userId) {
         res.redirect('/dashboard');
     } else {
-        console.log("UserID not valid. Redirecting to index.html")
         res.sendFile(join(__dirname, 'static', 'index.html'));
     }
 });
@@ -153,6 +179,98 @@ app.get('/logout', (req, res) => {
     });
 });
 
+// app.get('/weather', async (req, res) => {
+//     try {
+//         // Check if user is logged in
+//         if (!req.session.userId) {
+//             return res.status(401).send('Unauthorized');
+//         }
+//
+//         // Retrieve user data from the SQL database
+//         const session = await mysqlx.getSession({
+//             user: mysqlxConfig.username,
+//             password: mysqlxConfig.password,
+//             host: mysqlxConfig.host,
+//             port: mysqlxConfig.port
+//         });
+//
+//         const schema = session.getSchema(mysqlxConfig.schema);
+//         const users = schema.getCollection(mysqlxConfig.collection);
+//
+//         const result = await users.find('_id = :userId').bind('userId', req.session.userId).execute();
+//         const userData = result.fetchOne();
+//
+//         if (!userData) {
+//             return res.status(404).send('User not found');
+//         }
+//
+//         // Construct weather data based on user's information
+//         const weatherData = {
+//             username: userData.username,
+//             city: userData.city,
+//             country: userData.country,
+//             zipCode: userData.zipCode,
+//             fahrenheit: userData.country === 'United States' ? 'true' : 'false',
+//             temperature: userData.country === 'United States' ? '32' : '0',
+//             condition: 'Snowy' // Static weather condition for now
+//         };
+//
+//         // Send the weather data as JSON response
+//         res.json({ userData: weatherData });
+//     } catch (error) {
+//         console.error('Error retrieving weather data:', error);
+//         res.status(500).send('Server error');
+//     }
+// });
+
+app.get('/weather', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session.userId) {
+            return res.status(401).send('Unauthorized');
+        }
+
+        // Retrieve user data from the SQL database
+        const session = await mysqlx.getSession({
+            user: mysqlxConfig.username,
+            password: mysqlxConfig.password,
+            host: mysqlxConfig.host,
+            port: mysqlxConfig.port
+        });
+
+        const schema = session.getSchema(mysqlxConfig.schema);
+        const users = schema.getCollection(mysqlxConfig.collection);
+
+        const result = await users.find('_id = :userId').bind('userId', req.session.userId).execute();
+        const userData = result.fetchOne();
+
+        if (!userData) {
+            return res.status(404).send('User not found');
+        }
+
+        // Convert country name to ISO 3166-1 alpha-2 country code
+        if (userData.country === 'Deutschland')
+        {
+            userData.country = 'Germany';
+        }
+        const countryCode = getCountryCode(userData.country);
+        if (!countryCode) {
+            console.error('Invalid country name:', userData.country);
+            return res.status(400).send('Invalid country name');
+        }
+
+        // Fetch weather data based on user's location
+        const weatherData = await fetchWeatherData(userData.city, countryCode);
+
+        // Send the weather data as JSON response
+        res.json({ userData: userData, weatherData: weatherData });
+    } catch (error) {
+        console.error('Error retrieving weather data:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+
 /////////////////////////////////////
 /////////    GETS end   /////////////
 /////////////////////////////////////
@@ -162,7 +280,7 @@ app.get('/logout', (req, res) => {
 ///////        POSTS           //////
 /////////////////////////////////////
 app.post('/register', async (req, res) => {
-    const { firstName, lastName, email, username, password, repeatPassword, country } = req.body;
+    const { firstName, lastName, email, username, password, repeatPassword, city, country, zipCode } = req.body;
 
     // Check if passwords match
     if (password !== repeatPassword) {
@@ -196,11 +314,15 @@ app.post('/register', async (req, res) => {
 
         // Change to collection based
         // Insert the new user into the database
-        await users.add([{firstName, lastName, email, username, password: hashedPassword, country}]).execute();
+        await users.add([{firstName, lastName, email, username, password: hashedPassword, city, country, zipCode}]).execute();
 
         res.send(`
-        <p>User Created Successfully!</p>
-        <a href="/index.html">Login</a>
+        <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #212121; display: flex; justify-content: center; align-items: center; height: 100vh; color: #bbbbbb;">
+            <div style="text-align: center;">
+                <h1>User Created Successfully!</h1>
+                    <a href="/" style="color: #007bff; text-decoration: none; margin-top: 20px; display: block;">Login</a>
+            </div>
+        </body>
     `);
     } catch (error) {
         console.error('Error registering user:', error);
@@ -226,10 +348,11 @@ app.post('/login', async (req, res) => {
 
 
         // Find the user based on the username
+        // Find the user based on the username
         const result = await users.find('username = :username').bind('username', username).execute();
-        let resultAll = result.fetchAll();
+        const resultAll = result.fetchAll();
 
-        // Check if a user with the provided username exists and if the password matches
+// Check if a user with the provided username exists
         if (resultAll.length > 0) {
             const user = resultAll[0];
             const hashedPassword = user.password; // Assuming the password is stored as a hashed value in the database
@@ -245,8 +368,30 @@ app.post('/login', async (req, res) => {
                 res.send('Invalid username or password');
             }
         } else {
-            res.send('Invalid username or password');
+            // No user found with the provided username, check if the input is a valid email address
+            const emailResult = await users.find('email = :email').bind('email', username).execute();
+            const emailResultAll = emailResult.fetchAll();
+
+            // Check if a user with the provided email exists
+            if (emailResultAll.length > 0) {
+                const user = emailResultAll[0];
+                const hashedPassword = user.password; // Assuming the password is stored as a hashed value in the database
+
+                // Compare the provided password with the hashed password
+                const passwordMatch = await bcrypt.compare(password, hashedPassword);
+
+                if (passwordMatch) {
+                    // Set the userId in the session
+                    req.session.userId = user._id; // Assuming the user id is stored in a field named 'id' in the database
+                    res.redirect('/dashboard');
+                } else {
+                    res.send('Invalid username or password');
+                }
+            } else {
+                res.send('Invalid username or password');
+            }
         }
+
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).send('Server error');
@@ -296,11 +441,15 @@ app.get('/Dashboard.js', async (req, res) => {
         res.redirect('/');
     }
 });
-app.get('/logo.jpg', async (req, res) => {
-    res.sendFile(join(__dirname, 'static', 'logo.jpg'));
-});
-app.get('/hamburger.png', async (req, res) => {
-    res.sendFile(join(__dirname, 'static', 'hamburger.png'));
+app.get('/Weather.js', async (req, res) => {
+    if (req.session.userId) {
+        // If the user is logged in, serve the dashboard
+        res.sendFile(join(__dirname, 'static', 'Weather.js'));
+    } else {
+        // If not logged in, redirect to /
+        console.log("User tried to access Weather Widget without a valid session!");
+        res.redirect('/');
+    }
 });
 /////////////////////////////////////
 /////////    ETC end    /////////////

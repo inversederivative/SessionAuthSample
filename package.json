@@ -8,6 +8,7 @@
     "express-mysql-session": "^3.0.0",
     "express-session": "^1.18.0",
     "fs": "^0.0.1-security",
+    "iso-3166-1-alpha-2": "^1.0.1",
     "mongoose": "^8.1.1",
     "serve-favicon": "^2.5.0"
   }

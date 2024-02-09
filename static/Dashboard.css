@@ -60,3 +60,53 @@ body {
     margin-left: 0; /* Adjust according to your sidebar width */
     padding: 20px;
 }
+
+/* --------------------------- */
+/* -----  Weather Stuff  ----- */
+/* --------------------------- */
+
+.weather-container {
+    margin-left: 30px;
+}
+
+.weather-box {
+    width: 200px; /* Adjust size as needed */
+    height: 200px; /* Fixed aspect ratio */
+    background-color: #fff; /* Background color */
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px; /* Spacing */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow */
+}
+
+.weather-icon {
+    /* Style for weather icon */
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Maintain aspect ratio */
+    background-image: url('sunny.jpg'); /* Default icon */
+    background-size: cover; /* Maintain aspect ratio */
+}
+
+.weather-info {
+    text-align: center; /* Center align text */
+    margin-top: 10px; /* Spacing */
+}
+
+/* CSS for temperature */
+#temperature {
+    font-size: 24px; /* Adjust font size as needed */
+    font-weight: bold; /* Make the temperature bold */
+    color: #a10f0f; /* Set the text color */
+}
+
+/* CSS for description */
+#description {
+    font-size: 18px; /* Adjust font size as needed */
+    color: #a10f0f; /* Set the text color */
+}
+
+/* CSS for location */
+#location {
+    font-size: 20px; /* Adjust font size as needed */
+    color: #a10f0f; /* Set the text color */
+    font-style: italic; /* Make the location italic */
+}

@@ -10,7 +10,7 @@ body {
 }
 
 .register-container {
-    width: 400px;
+    width: 550px;
     background-color: #2e2e2e;
     padding: 20px;
     border-radius: 8px;
@@ -28,7 +28,7 @@ body {
 input[type="text"],
 input[type="password"],
 input[type="email"] {
-    width: 100%;
+    width: calc(50% - 12px); /* Adjusted width for inputs */
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #bbb;
@@ -54,4 +54,43 @@ input[type="submit"]:hover {
 .login {
     color: #007bff;
     text-decoration: none;
+}
+
+/* Additional CSS for new structure */
+.name-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.name-input {
+    width: calc(50% - 12px);
+    display: inline-block;
+    text-align: left;
+}
+
+#fname {
+    width: 150px;
+}
+
+#lname {
+    width: 150px;
+}
+
+.location-container {
+    display: flex;
+    justify-content: center;
+}
+
+.location-input {
+    width: calc(50% - 12px);
+    display: inline-block;
+    text-align: left;
+}
+
+#city {
+    width: 180px;
+}
+
+#country {
+    width: 180px;
 }
