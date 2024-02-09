@@ -1,0 +1,62 @@
+/* Style for the Body */
+body {
+    background-color: #212121; /* Change to the desired background color */
+    margin: 0; /* Remove default body margin */
+    font-family: Arial, sans-serif; /* Add a default font-family */
+}
+
+/* CSS for top bar */
+.top-bar {
+    background-color: #2e2e2e;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* CSS for hamburger menu */
+.hamburger-menu {
+    /* Style your hamburger menu icon here */
+    cursor: pointer;
+    padding: 10px;
+}
+
+.hamburger-menu img {
+    width: 30px; /* Adjust the size as needed */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* CSS for sidebar */
+.sidebar {
+    background-color: #2e2e2e;
+    width: 200px;
+    height: 100%;
+    position: fixed;
+    top: 50px;
+    left: -200px; /* Initially hide the sidebar */
+    transition: left 0.3s ease; /* Add smooth transition */
+}
+
+.sidebar-open {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+}
+
+/* CSS for content area */
+.content {
+    margin-left: 0; /* Adjust according to your sidebar width */
+    padding: 20px;
+}
